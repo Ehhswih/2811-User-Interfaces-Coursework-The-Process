@@ -23,6 +23,9 @@
 #include <QMessageBox>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#include <QObject>
+#include <QComboBox>
+
 #include "the_player.h"
 #include "the_button.h"
 
@@ -78,7 +81,9 @@ int main(int argc, char *argv[]) {
     std::vector<TheButtonInfo> videos;
 
     if (argc == 2)
-        videos = getInfoIn( std::string(argv[1]) );
+        videos = getInfoIn(std::string(argv[1]));
+
+    qDebug() << "Number of videos found:" << videos.size();
 
     if (videos.size() == 0) {
 
@@ -113,6 +118,37 @@ int main(int argc, char *argv[]) {
         layout->addWidget(button);
         button->init(&videos.at(i));
     }
+
+    // create the play and pause buttons
+    QPushButton *togglePlayPauseButton = new QPushButton("Pause", buttonWidget);
+
+    // add the toggle button to the layout
+    layout->addWidget(togglePlayPauseButton);
+
+    // Connect the signals and slots
+    QObject::connect(togglePlayPauseButton, &QPushButton::clicked, [player, togglePlayPauseButton]() {
+        player->togglePlayPause();
+        if (player->state() == QMediaPlayer::PlayingState)
+            togglePlayPauseButton->setText("Pause");
+        else
+            togglePlayPauseButton->setText("Play");
+    });
+
+    // Creating drop-down menus for multiplier playback
+    QComboBox *speedComboBox = new QComboBox(buttonWidget);
+    speedComboBox->addItem("0.5x", QVariant(0.5));
+    speedComboBox->addItem("1.0x", QVariant(1.0));
+    speedComboBox->addItem("1.5x", QVariant(1.5));
+    speedComboBox->addItem("2.0x", QVariant(2.0));
+
+    layout->addWidget(speedComboBox);
+
+    QObject::connect(speedComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                     [player, speedComboBox](int index) {
+                         qreal speed = speedComboBox->itemData(index).toDouble();
+                         player->setPlaybackRate(speed);
+                     });
+
 
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);

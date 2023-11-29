@@ -32,3 +32,9 @@ void ThePlayer::jumpTo (TheButtonInfo* button) {
     setMedia( * button -> url);
     play();
 }
+
+void ThePlayer::setSpeed(qreal speed) {
+    qDebug() << "Setting playback speed to:" << speed;
+    setPlaybackRate(speed);
+}
+
