@@ -163,11 +163,6 @@ int main(int argc, char *argv[]) {
                          player->setPlaybackRate(speed);
                      });
 
-
-    // tell the player what buttons and videos are available
-    player->setContent(&buttons, & videos);
-
-
     // Create a volume control slider
     QSlider *volumeSlider = new QSlider(Qt::Horizontal, buttonWidget);
     volumeSlider->setRange(0, 100); // Set the slider range from 0 to 100
@@ -183,8 +178,7 @@ int main(int argc, char *argv[]) {
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);
 
-
-    //new-------------------------------------------------------------------------------------
+    //Bition__2023.11.30-------------------------------------------------------------------------------------
 
     // Create an event loop that waits for the media to finish first loading.
     QEventLoop loop;
@@ -216,7 +210,7 @@ int main(int argc, char *argv[]) {
     QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
     QObject::connect(positionSlider, &QSlider::valueChanged, player, &ThePlayer::setPosition);
 
-    //new-------------------------------------------------------------------------------------
+    //Bition__2023.11.30-------------------------------------------------------------------------------------
 
 
     // create the main window and layout
