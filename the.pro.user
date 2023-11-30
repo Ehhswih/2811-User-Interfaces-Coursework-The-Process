@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.1, 2023-11-29T16:57:07. -->
+<!-- Written by QtCreator 4.11.1, 2023-11-30T15:34:20. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -287,10 +287,11 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/wangxingyu/Desktop/learn/semester 5/UI/2811_cw-master-release/2811_cw3-master-release-lowres/the.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/wangxingyu/Desktop/learn/semester 5/UI/2811_cw-master-release/2811_cw3-master-release-lowres/the.pro</value>
-    <value type="QString" key="RunConfiguration.Arguments">&quot;C:\Users\wangxingyu\Desktop\learn\semester 5\UI\2811_cw-master-release\2811_cw3-master-release-lowres\videos&quot;</value>
-    <value type="bool" key="RunConfiguration.Arguments.multi">true</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">the2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/wangxingyu/Desktop/learn/semester 5/UI/2811_cw-master-release/2811-User-Interfaces-Coursework-The-Process/the.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/wangxingyu/Desktop/learn/semester 5/UI/2811_cw-master-release/2811-User-Interfaces-Coursework-The-Process/the.pro</value>
+    <value type="QString" key="RunConfiguration.Arguments">&quot;C:\Users\wangxingyu\Desktop\learn\semester 5\UI\2811_cw-master-release\2811-User-Interfaces-Coursework-The-Process\videos&quot;</value>
+    <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -298,7 +299,6 @@
     <value type="bool" key="RunConfiguration.UseMultiProcess">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="bool" key="RunConfiguration.UseTerminal">false</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Users/wangxingyu/Desktop/learn/semester 5/UI/2811_cw-master-release/build-the-Desktop_Qt_5_14_2_MinGW_32_bit-Debug</value>
    </valuemap>

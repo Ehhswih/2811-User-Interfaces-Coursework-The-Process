@@ -149,6 +149,17 @@ int main(int argc, char *argv[]) {
                          player->setPlaybackRate(speed);
                      });
 
+    // Create a volume control slider
+    QSlider *volumeSlider = new QSlider(Qt::Horizontal, buttonWidget);
+    volumeSlider->setRange(0, 100); // Set the slider range from 0 to 100
+    volumeSlider->setValue(player->volume()); // Set the slider value to the player's current volume
+
+    // Add the slider to the layout
+    layout->addWidget(volumeSlider);
+
+    // Connect the slider's signal to ThePlayer's setVolume slot
+    QObject::connect(volumeSlider, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
+
 
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);

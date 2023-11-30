@@ -24,7 +24,7 @@ private:
 
 public:
     ThePlayer() : QMediaPlayer(NULL) {
-        setVolume(0); // be slightly less annoying
+        setVolume(50); // be slightly less annoying
         connect (this, SIGNAL (stateChanged(QMediaPlayer::State)), this, SLOT (playStateChanged(QMediaPlayer::State)) );
 
         mTimer = new QTimer(NULL);
