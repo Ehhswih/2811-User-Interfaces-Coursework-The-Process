@@ -12,6 +12,8 @@
 #include <QApplication>
 #include <QtMultimediaWidgets/QVideoWidget>
 #include <QMediaPlaylist>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 #include <string>
 #include <vector>
 #include <QtWidgets/QPushButton>
@@ -25,6 +27,17 @@
 #include <QtCore/QDirIterator>
 #include <QObject>
 #include <QComboBox>
+#include <QSlider>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QFileDialog>
+#include <QAudioDeviceInfo>
+#include <QVideoWidget>
+#include <QSlider>
+#include <QFileDialog>
+#include <QPushButton>
+#include <QTimer>
+
 
 #include "the_player.h"
 #include "the_button.h"
@@ -107,8 +120,9 @@ int main(int argc, char *argv[]) {
     std::vector<TheButton*> buttons;
     // the buttons are arranged horizontally
     QHBoxLayout *layout = new QHBoxLayout();
-    buttonWidget->setLayout(layout);
 
+    buttonWidget->setLayout(layout);
+    // layout->addWidget(buttonWidget);
 
     // create the four buttons
     for ( int i = 0; i < 4; i++ ) {
@@ -134,7 +148,7 @@ int main(int argc, char *argv[]) {
             togglePlayPauseButton->setText("Play");
     });
 
-    // Creating drop-down menus for multiplier playback
+    // Creating drop-down   menus for multiplier playback
     QComboBox *speedComboBox = new QComboBox(buttonWidget);
     speedComboBox->addItem("0.5x", QVariant(0.5));
     speedComboBox->addItem("1.0x", QVariant(1.0));
@@ -152,6 +166,58 @@ int main(int argc, char *argv[]) {
 
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);
+
+
+    // Create a volume control slider
+    QSlider *volumeSlider = new QSlider(Qt::Horizontal, buttonWidget);
+    volumeSlider->setRange(0, 100); // Set the slider range from 0 to 100
+    volumeSlider->setValue(player->volume()); // Set the slider value to the player's current volume
+
+    // Add the slider to the layout
+    layout->addWidget(volumeSlider);
+
+    // Connect the slider's signal to ThePlayer's setVolume slot
+    QObject::connect(volumeSlider, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
+
+
+    // tell the player what buttons and videos are available
+    player->setContent(&buttons, & videos);
+
+
+    //new-------------------------------------------------------------------------------------
+
+    // Create an event loop that waits for the media to finish first loading.
+    QEventLoop loop;
+    QObject::connect(player, &QMediaPlayer::mediaStatusChanged, &loop, &QEventLoop::quit);
+
+    // Start the event loop
+    loop.exec();
+
+    // Progress bar settings
+    QSlider* positionSlider = new QSlider(Qt::Horizontal);
+
+    // Get the total duration of the video
+    qint64 totalVideoDuration = player->duration();
+    positionSlider->setRange(0, totalVideoDuration);
+    layout->addWidget(positionSlider);
+
+    // Handling media state changes
+    QObject::connect(player, &QMediaPlayer::stateChanged, [=](QMediaPlayer::State newState) {
+
+       // Make sure the video is loaded
+       qint64 totalVideoDuration = player->duration();
+       if(totalVideoDuration != 0){
+          positionSlider->setRange(0, totalVideoDuration);
+          qDebug() << "VideoDuration: " << totalVideoDuration;
+       }
+
+    });
+
+    QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
+    QObject::connect(positionSlider, &QSlider::valueChanged, player, &ThePlayer::setPosition);
+
+    //new-------------------------------------------------------------------------------------
+
 
     // create the main window and layout
     QWidget window;
