@@ -37,6 +37,7 @@
 #include <QFileDialog>
 #include <QPushButton>
 #include <QTimer>
+#include <QLabel>
 
 
 #include "the_player.h"
@@ -79,6 +80,13 @@ std::vector<TheButtonInfo> getInfoIn (std::string loc) {
     }
 
     return out;
+}
+
+QString formatTime(qint64 timeInMs) {
+    qint64 seconds = timeInMs / 1000;
+    qint64 minutes = seconds / 60;
+    seconds = seconds % 60;
+    return QString::asprintf("%02lld:%02lld", minutes, seconds);
 }
 
 
@@ -178,8 +186,6 @@ int main(int argc, char *argv[]) {
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);
 
-    //Bition__2023.11.30-------------------------------------------------------------------------------------
-
     // Create an event loop that waits for the media to finish first loading.
     QEventLoop loop;
     QObject::connect(player, &QMediaPlayer::mediaStatusChanged, &loop, &QEventLoop::quit);
@@ -210,7 +216,26 @@ int main(int argc, char *argv[]) {
     QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
     QObject::connect(positionSlider, &QSlider::valueChanged, player, &ThePlayer::setPosition);
 
-    //Bition__2023.11.30-------------------------------------------------------------------------------------
+    // Add Labels for Duration Display
+    QLabel *totalDurationLabel = new QLabel(buttonWidget);
+    QLabel *currentPositionLabel = new QLabel("00:00", buttonWidget);
+
+    layout->addWidget(currentPositionLabel);
+    layout->addWidget(positionSlider);
+    layout->addWidget(totalDurationLabel);
+
+    // Update Labels on Position Change
+    QObject::connect(player, &QMediaPlayer::positionChanged, [=](qint64 position) {
+        currentPositionLabel->setText(formatTime(position));
+    });
+
+    QObject::connect(player, &QMediaPlayer::durationChanged, [=](qint64 duration) {
+        totalDurationLabel->setText(formatTime(duration));
+        positionSlider->setRange(0, duration);
+    });
+
+    // Update Position Slider Interaction
+    QObject::connect(positionSlider, &QSlider::sliderMoved, player, &ThePlayer::setPosition);
 
 
     // create the main window and layout
