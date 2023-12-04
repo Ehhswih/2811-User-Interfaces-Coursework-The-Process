@@ -156,6 +156,16 @@ int main(int argc, char *argv[]) {
             togglePlayPauseButton->setText("Play");
     });
 
+    QPushButton *nextButton = new QPushButton("Next", buttonWidget);
+    QPushButton *prevButton = new QPushButton("Previous", buttonWidget);
+
+    layout->addWidget(prevButton);
+    layout->addWidget(nextButton);
+
+    QObject::connect(nextButton, &QPushButton::clicked, player, &ThePlayer::nextVideo);
+    QObject::connect(prevButton, &QPushButton::clicked, player, &ThePlayer::previousVideo);
+
+
     // Creating drop-down   menus for multiplier playback
     QComboBox *speedComboBox = new QComboBox(buttonWidget);
     speedComboBox->addItem("0.5x", QVariant(0.5));
@@ -208,7 +218,6 @@ int main(int argc, char *argv[]) {
        qint64 totalVideoDuration = player->duration();
        if(totalVideoDuration != 0){
           positionSlider->setRange(0, totalVideoDuration);
-          qDebug() << "VideoDuration: " << totalVideoDuration;
        }
 
     });

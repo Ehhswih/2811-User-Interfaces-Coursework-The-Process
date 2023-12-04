@@ -8,7 +8,10 @@
 
 #include <QApplication>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 #include <QSlider>
+#include <QListWidget>
+
 #include "the_button.h"
 #include <vector>
 #include <QTimer>
@@ -22,6 +25,7 @@ private:
     std::vector<TheButton*>* buttons;
     QTimer* mTimer;
     long updateCount = 0;
+    QMediaPlaylist* playlist;
 
 public:
     ThePlayer() : QMediaPlayer(NULL) {
@@ -33,6 +37,8 @@ public:
         mTimer->start();
         connect( mTimer, SIGNAL (timeout()), SLOT ( shuffle() ) ); // ...running shuffle method
 
+        playlist = new QMediaPlaylist(this);
+        setPlaylist(playlist);
     }
 
     // all buttons have been setup, store pointers here
@@ -61,6 +67,8 @@ public slots:
     // control the video speed
     void setSpeed(qreal speed);
 
+    void nextVideo();
+    void previousVideo();
 };
 
 #endif //CW2_THE_PLAYER_H

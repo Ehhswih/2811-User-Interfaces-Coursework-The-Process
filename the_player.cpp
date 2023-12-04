@@ -8,7 +8,16 @@
 void ThePlayer::setContent(std::vector<TheButton*>* b, std::vector<TheButtonInfo>* i) {
     buttons = b;
     infos = i;
-    jumpTo(buttons -> at(0) -> info);
+
+    // Clear the current playlist and add a new video
+    playlist->clear();
+    for (const auto &info : *infos) {
+        playlist->addMedia(*info.url);
+    }
+
+    // Start playing the first video
+    playlist->setCurrentIndex(0);
+    play();
 }
 
 // change the image and video for one button every one second
@@ -37,6 +46,14 @@ void ThePlayer::jumpTo (TheButtonInfo* button) {
 void ThePlayer::setSpeed(qreal speed) {
     qDebug() << "Setting playback speed to:" << speed;
     setPlaybackRate(speed);
+}
+
+void ThePlayer::nextVideo() {
+    playlist->next();
+}
+
+void ThePlayer::previousVideo() {
+    playlist->previous();
 }
 
 
