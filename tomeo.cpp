@@ -238,6 +238,33 @@ int main(int argc, char *argv[]) {
     QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
     QObject::connect(positionSlider, &QSlider::valueChanged, player, &ThePlayer::setPosition);
 
+    // create two buttons for fast forward and rewind.
+    QPushButton *forwardButton = new QPushButton("Fast Forward");
+    QPushButton *rewindButton = new QPushButton("Rewind");
+    layout->addWidget(forwardButton);
+    layout->addWidget(rewindButton);
+
+    // Click event for the fast-forward button
+    QObject::connect(forwardButton, &QPushButton::clicked, [player](){
+        qint64 currentPosition = player->position();
+        qint64 duration = player->duration();
+        if(currentPosition + 5000 < duration){
+            player->setPosition(currentPosition + 5000);
+        } else {
+            player->setPosition(duration);
+        }
+    });
+
+    // Click event for the rewind button
+    QObject::connect(rewindButton, &QPushButton::clicked, [player](){
+        qint64 currentPosition = player->position();
+        if(currentPosition - 5000 > 0){
+            player->setPosition(currentPosition - 5000);
+        } else {
+            player->setPosition(0);
+        }
+    });
+
     // Add Labels for Duration Display
     QLabel *totalDurationLabel = new QLabel(buttonWidget);
     QLabel *currentPositionLabel = new QLabel("00:00", buttonWidget);
