@@ -228,6 +228,7 @@ int main(int argc, char *argv[]) {
     // Add Labels for Duration Display
     QLabel *totalDurationLabel = new QLabel(buttonWidget);
     QLabel *currentPositionLabel = new QLabel("00:00", buttonWidget);
+    totalDurationLabel->setText(formatTime(totalVideoDuration));
 
     layout->addWidget(currentPositionLabel);
     layout->addWidget(positionSlider);
@@ -253,6 +254,22 @@ int main(int argc, char *argv[]) {
     window.setLayout(top);
     window.setWindowTitle("tomeo");
     window.setMinimumSize(800, 680);
+
+
+    // Create full screen
+    QPushButton fullscreenButton("Toggle Fullscreen");
+    layout->addWidget(&fullscreenButton);
+
+    // Connect the button click event to the full screen toggle slot
+    QObject::connect(&fullscreenButton, &QPushButton::clicked, [&window, &fullscreenButton]() {
+        if (window.isFullScreen()) {
+            window.showNormal(); // Exit Fulllscreen
+            fullscreenButton.setText("Toggle Fullscreen");
+        } else {
+            window.showFullScreen(); // Toggle Fullscreen
+            fullscreenButton.setText("Exit Fullscreen");
+        }
+    });
 
     // add the video and the buttons to the top level widget
     top->addWidget(videoWidget);
