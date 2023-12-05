@@ -264,18 +264,17 @@ int main(int argc, char *argv[]) {
 
 
 
-    // Create the main window and layout
-    QGraphicsScene *scene = new QGraphicsScene;
-    QGraphicsView *view = new QGraphicsView(scene);
+    // // Create the main window and layout
+    // QGraphicsScene *scene = new QGraphicsScene;
+    // QGraphicsView *view = new QGraphicsView(scene);
 
-    // Add the video widget to the scene
-    QGraphicsProxyWidget *videoProxy = scene->addWidget(videoWidget);
-    videoProxy->setZValue(0); // Video is at layer 0
+    // // Add the video widget to the scene
+    // QGraphicsProxyWidget *videoProxy = scene->addWidget(videoWidget);
+    // videoProxy->setZValue(0); // Video is at layer 0
 
-    // Add the function widget to the scene
-    QGraphicsProxyWidget *functionProxy = scene->addWidget(functionWidget);
-    functionProxy->setZValue(1); // Function bar is at layer 1, above the video
-
+    // // Add the function widget to the scene
+    // QGraphicsProxyWidget *functionProxy = scene->addWidget(functionWidget);
+    // functionProxy->setZValue(1); // Function bar is at layer 1, above the video
 
 
 
@@ -319,10 +318,10 @@ int main(int argc, char *argv[]) {
 
     // add the video and the buttons to the top level widget
         // Set up the layout for the main window
-        top->addWidget(view);
+        // top->addWidget(view);
 
-    // top->addWidget(videoWidget);
-    // top->addWidget(functionWidget);
+    top->addWidget(videoWidget);
+    top->addWidget(functionWidget);
 
     // 在需要时，隐藏或显示部件
     // videoWidget->setVisible(true);  // 显示 videoWidget
