@@ -24,7 +24,9 @@ void ThePlayer::setContent(std::vector<TheButton*>* b, std::vector<TheButtonInfo
 void ThePlayer::shuffle() {
     TheButtonInfo* i = & infos -> at (rand() % infos->size() );
 //        setMedia(*i->url);
-    buttons -> at( updateCount++ % buttons->size() ) -> init( i );
+
+    //Remove this comment if you need a rotating image
+    // buttons -> at( updateCount++ % buttons->size() ) -> init( i );
 }
 
 void ThePlayer::playStateChanged (QMediaPlayer::State ms) {

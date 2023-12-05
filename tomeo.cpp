@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets>
 #include <QtWidgets/QHBoxLayout>
 #include <QtCore/QFileInfo>
 #include <QtWidgets/QFileIconProvider>
@@ -37,6 +38,7 @@
 #include <QFileDialog>
 #include <QPushButton>
 #include <QTimer>
+#include <QStackedLayout>
 #include <QLabel>
 
 
@@ -130,16 +132,28 @@ int main(int argc, char *argv[]) {
     QHBoxLayout *layout = new QHBoxLayout();
 
     buttonWidget->setLayout(layout);
-    // layout->addWidget(buttonWidget);
 
+    //Setting the Progress Bar Layout
+    QWidget *sliderWidget = new QWidget();
+    QHBoxLayout *sliderlayout = new QHBoxLayout();
+    sliderWidget->setLayout(sliderlayout);
+
+    //General layout of the function bar
+    QWidget *functionWidget = new QWidget();
+    QVBoxLayout *functionlayout = new QVBoxLayout();
+    functionWidget->setLayout(functionlayout);
+    functionlayout->addWidget(sliderWidget);
+    functionlayout->addWidget(buttonWidget);
+
+    // Remove this comment if you need a rotating image
     // create the four buttons
-    for ( int i = 0; i < 4; i++ ) {
-        TheButton *button = new TheButton(buttonWidget);
-        button->connect(button, SIGNAL(jumpTo(TheButtonInfo* )), player, SLOT (jumpTo(TheButtonInfo*))); // when clicked, tell the player to play.
-        buttons.push_back(button);
-        layout->addWidget(button);
-        button->init(&videos.at(i));
-    }
+    // for ( int i = 0; i < 4; i++ ) {
+    //     TheButton *button = new TheButton(buttonWidget);
+    //     button->connect(button, SIGNAL(jumpTo(TheButtonInfo* )), player, SLOT (jumpTo(TheButtonInfo*))); // when clicked, tell the player to play.
+    //     buttons.push_back(button);
+    //     layout->addWidget(button);
+    //     button->init(&videos.at(i));
+    // }
 
     // create the play and pause buttons
     QPushButton *togglePlayPauseButton = new QPushButton("Pause", buttonWidget);
@@ -192,7 +206,6 @@ int main(int argc, char *argv[]) {
     // Connect the slider's signal to ThePlayer's setVolume slot
     QObject::connect(volumeSlider, &QSlider::valueChanged, player, &QMediaPlayer::setVolume);
 
-
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);
 
@@ -204,12 +217,12 @@ int main(int argc, char *argv[]) {
     loop.exec();
 
     // Progress bar settings
-    QSlider* positionSlider = new QSlider(Qt::Horizontal);
+    QSlider* positionSlider = new QSlider(Qt::Horizontal, buttonWidget);
 
     // Get the total duration of the video
     qint64 totalVideoDuration = player->duration();
     positionSlider->setRange(0, totalVideoDuration);
-    layout->addWidget(positionSlider);
+
 
     // Handling media state changes
     QObject::connect(player, &QMediaPlayer::stateChanged, [=](QMediaPlayer::State newState) {
@@ -230,9 +243,9 @@ int main(int argc, char *argv[]) {
     QLabel *currentPositionLabel = new QLabel("00:00", buttonWidget);
     totalDurationLabel->setText(formatTime(totalVideoDuration));
 
-    layout->addWidget(currentPositionLabel);
-    layout->addWidget(positionSlider);
-    layout->addWidget(totalDurationLabel);
+    sliderlayout->addWidget(currentPositionLabel);
+    sliderlayout->addWidget(positionSlider);
+    sliderlayout->addWidget(totalDurationLabel);
 
     // Update Labels on Position Change
     QObject::connect(player, &QMediaPlayer::positionChanged, [=](qint64 position) {
@@ -248,13 +261,31 @@ int main(int argc, char *argv[]) {
     QObject::connect(positionSlider, &QSlider::sliderMoved, player, &ThePlayer::setPosition);
 
 
+
+
+
+    // Create the main window and layout
+    QGraphicsScene *scene = new QGraphicsScene;
+    QGraphicsView *view = new QGraphicsView(scene);
+
+    // Add the video widget to the scene
+    QGraphicsProxyWidget *videoProxy = scene->addWidget(videoWidget);
+    videoProxy->setZValue(0); // Video is at layer 0
+
+    // Add the function widget to the scene
+    QGraphicsProxyWidget *functionProxy = scene->addWidget(functionWidget);
+    functionProxy->setZValue(1); // Function bar is at layer 1, above the video
+
+
+
+
+
     // create the main window and layout
     QWidget window;
     QVBoxLayout *top = new QVBoxLayout();
     window.setLayout(top);
     window.setWindowTitle("tomeo");
     window.setMinimumSize(800, 680);
-
 
     // Create full screen
     QPushButton fullscreenButton("Toggle Fullscreen");
@@ -271,9 +302,32 @@ int main(int argc, char *argv[]) {
         }
     });
 
+    // Style example-------------------------------------------------
+    QString fullscreenButtonStyle = "QPushButton {"
+                                    "   background-color: #2196F3;"
+                                    "   color: white;"
+                                    "   border: 2px solid #2196F3;"
+                                    "   border-radius: 4px;"
+                                    "   padding: 4px 8px;"
+                                    "}";
+
+    fullscreenButton.setStyleSheet(fullscreenButtonStyle);
+    // Style example-------------------------------------------------
+
+    //用于查看功能栏大小以及布局
+    // functionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 128);");
+
     // add the video and the buttons to the top level widget
-    top->addWidget(videoWidget);
-    top->addWidget(buttonWidget);
+        // Set up the layout for the main window
+        top->addWidget(view);
+
+    // top->addWidget(videoWidget);
+    // top->addWidget(functionWidget);
+
+    // 在需要时，隐藏或显示部件
+    // videoWidget->setVisible(true);  // 显示 videoWidget
+    // sliderWidget->setVisible(false);  // 隐藏 sliderWidget
+    // buttonWidget->setVisible(false);  // 隐藏 buttonWidget
 
     // showtime!
     window.show();
