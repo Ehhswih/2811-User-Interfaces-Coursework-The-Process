@@ -300,8 +300,18 @@ int main(int argc, char *argv[]) {
 
     });
 
+     // Create a timer that triggers every 10 milliseconds
+     QTimer *updatesliderTimer = new QTimer();
+     updatesliderTimer->setInterval(10);
+
+     // Connect the timer's timeout signal to the slot function that updates the location.
+     QObject::connect(updatesliderTimer, &QTimer::timeout, [=]() {
+         positionSlider->setValue(player->position());
+     });
+     updatesliderTimer->start();
+
+
     QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
-    QObject::connect(positionSlider, &QSlider::valueChanged, player, &ThePlayer::setPosition);
 
     // create two buttons for fast forward and rewind.
     QPushButton *forwardButton = new QPushButton("Fast Forward");
