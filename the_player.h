@@ -44,6 +44,9 @@ public:
     // all buttons have been setup, store pointers here
     void setContent(std::vector<TheButton*>* b, std::vector<TheButtonInfo>* i);
 
+    QMediaPlaylist* getPlaylist() const {
+            return playlist;
+        }
 
 private slots:
 

@@ -170,6 +170,41 @@ int main(int argc, char *argv[]) {
             togglePlayPauseButton->setText("Play");
     });
 
+    QListWidget *playlistWidget = new QListWidget;
+    layout->addWidget(playlistWidget);
+
+    QMediaPlaylist *playlist = player->getPlaylist();
+
+    // Function to update the playlist widget
+    auto updatePlaylistWidget = [&]() {
+        playlistWidget->clear();
+        for (int i = 0; i < playlist->mediaCount(); ++i) {
+            QUrl mediaUrl = playlist->media(i).request().url();
+            playlistWidget->addItem(mediaUrl.fileName());
+        }
+    };
+
+    // Initial population of the playlist widget
+    updatePlaylistWidget();
+
+    // Connect playlist update signals to the update function
+    QObject::connect(playlist, &QMediaPlaylist::mediaInserted, updatePlaylistWidget);
+    QObject::connect(playlist, &QMediaPlaylist::mediaRemoved, updatePlaylistWidget);
+    QObject::connect(playlist, &QMediaPlaylist::mediaChanged, updatePlaylistWidget);
+
+    // Highlight Current Playing Media
+    QObject::connect(playlist, &QMediaPlaylist::currentIndexChanged, [playlistWidget](int index){
+        playlistWidget->setCurrentRow(index);
+    });
+
+    // Connect itemClicked Signal
+    QObject::connect(playlistWidget, &QListWidget::itemClicked, [playlist, playlistWidget](QListWidgetItem *item){
+        int index = playlistWidget->row(item);
+        playlist->setCurrentIndex(index);
+    });
+
+
+    // create the next and previous buttons
     QPushButton *nextButton = new QPushButton("Next", buttonWidget);
     QPushButton *prevButton = new QPushButton("Previous", buttonWidget);
 
