@@ -214,6 +214,36 @@ int main(int argc, char *argv[]) {
     QObject::connect(nextButton, &QPushButton::clicked, player, &ThePlayer::nextVideo);
     QObject::connect(prevButton, &QPushButton::clicked, player, &ThePlayer::previousVideo);
 
+    // Set the Corresponding Playback Modes
+    QComboBox *playbackModeComboBox = new QComboBox;
+    playbackModeComboBox->addItem("Sequential");
+    playbackModeComboBox->addItem("Loop");
+    playbackModeComboBox->addItem("Stop at End");
+    layout->addWidget(playbackModeComboBox);
+
+    QObject::connect(playbackModeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+        [playlist, player](int index){
+            switch(index) {
+                case 0: // Sequential
+                    playlist->setPlaybackMode(QMediaPlaylist::Sequential);
+                    break;
+                case 1: // Loop
+                    playlist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+                    break;
+                case 2: // Stop at End
+                    playlist->setPlaybackMode(QMediaPlaylist::Sequential);
+                    QObject::connect(player, &QMediaPlayer::mediaStatusChanged,
+                        [playlist, player](QMediaPlayer::MediaStatus status) {
+                            if (status == QMediaPlayer::EndOfMedia) {
+                                player->pause();
+                            }
+                        });
+                    break;
+                default:
+                    break;
+            }
+        });
+
 
     // Creating drop-down   menus for multiplier playback
     QComboBox *speedComboBox = new QComboBox(buttonWidget);
