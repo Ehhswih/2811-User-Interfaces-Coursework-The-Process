@@ -37,6 +37,7 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QPixmap>
 #include <QTimer>
 #include <QStackedLayout>
 #include <QLabel>
@@ -117,33 +118,51 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
+
+    // create the main window and layout
+    QWidget window;
+    // QMainWindow window;
+    QVBoxLayout *top = new QVBoxLayout(&window);
+    window.setLayout(top);
+    window.setWindowTitle("tomeo");
+    window.setMinimumSize(800, 680);
+
     // the widget that will show the video
     QVideoWidget *videoWidget = new QVideoWidget;
+    QVBoxLayout *videolayout = new QVBoxLayout();
+    videoWidget->setLayout(videolayout);
 
     // the QMediaPlayer which controls the playback
     ThePlayer *player = new ThePlayer;
     player->setVideoOutput(videoWidget);
 
-    // a row of buttons
-    QWidget *buttonWidget = new QWidget();
-    // a list of the buttons
-    std::vector<TheButton*> buttons;
-    // the buttons are arranged horizontally
-    QHBoxLayout *layout = new QHBoxLayout();
-
-    buttonWidget->setLayout(layout);
-
-    //Setting the Progress Bar Layout
-    QWidget *sliderWidget = new QWidget();
-    QHBoxLayout *sliderlayout = new QHBoxLayout();
-    sliderWidget->setLayout(sliderlayout);
-
     //General layout of the function bar
     QWidget *functionWidget = new QWidget();
     QVBoxLayout *functionlayout = new QVBoxLayout();
     functionWidget->setLayout(functionlayout);
+
+    // functionWidget->setFixedHeight(500);
+
+    // videolayout->addWidget(functionWidget);
+
+    // a row of buttons
+    QWidget *buttonWidget = new QWidget(functionWidget);
+    // a list of the buttons
+    std::vector<TheButton*> buttons;
+    // the buttons are arranged horizontally
+    QHBoxLayout *layout = new QHBoxLayout();
+    buttonWidget->setLayout(layout);
+
+    //Setting the Progress Bar Layout
+    QWidget *sliderWidget = new QWidget(functionWidget);
+    QHBoxLayout *sliderlayout = new QHBoxLayout(sliderWidget);
+    sliderWidget->setLayout(sliderlayout);
+
     functionlayout->addWidget(sliderWidget);
     functionlayout->addWidget(buttonWidget);
+
+    // functionWidget->setVisible(true);
+
 
     // Remove this comment if you need a rotating image
     // create the four buttons
@@ -155,9 +174,9 @@ int main(int argc, char *argv[]) {
     //     button->init(&videos.at(i));
     // }
 
+
     // create the play and pause buttons
     QPushButton *togglePlayPauseButton = new QPushButton("Pause", buttonWidget);
-
     // add the toggle button to the layout
     layout->addWidget(togglePlayPauseButton);
 
@@ -170,10 +189,13 @@ int main(int argc, char *argv[]) {
             togglePlayPauseButton->setText("Play");
     });
 
-    QListWidget *playlistWidget = new QListWidget;
+
+    QListWidget *playlistWidget = new QListWidget(buttonWidget);
     layout->addWidget(playlistWidget);
 
     QMediaPlaylist *playlist = player->getPlaylist();
+    // 设置固定高度
+    playlistWidget->setFixedHeight(75);
 
     // Function to update the playlist widget
     auto updatePlaylistWidget = [&]() {
@@ -222,20 +244,29 @@ int main(int argc, char *argv[]) {
     layout->addWidget(playbackModeComboBox);
 
     QObject::connect(playbackModeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-        [playlist, player](int index){
+        [playlist, player, togglePlayPauseButton](int index){
             switch(index) {
                 case 0: // Sequential
                     playlist->setPlaybackMode(QMediaPlaylist::Sequential);
                     break;
                 case 1: // Loop
-                    playlist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+                    playlist->setPlaybackMode(QMediaPlaylist::Sequential);
+                    QObject::connect(player, &QMediaPlayer::mediaStatusChanged,
+                            [playlist, player, togglePlayPauseButton](QMediaPlayer::MediaStatus status) {
+                                if (status == QMediaPlayer::EndOfMedia) {
+                                             player->pause();
+                                             player->setPosition(0);
+                                             player->play();
+                                         }
+                                     });
                     break;
                 case 2: // Stop at End
                     playlist->setPlaybackMode(QMediaPlaylist::Sequential);
                     QObject::connect(player, &QMediaPlayer::mediaStatusChanged,
-                        [playlist, player](QMediaPlayer::MediaStatus status) {
+                        [playlist, player, togglePlayPauseButton](QMediaPlayer::MediaStatus status) {
                             if (status == QMediaPlayer::EndOfMedia) {
                                 player->pause();
+                                togglePlayPauseButton->setText("Play");
                             }
                         });
                     break;
@@ -260,6 +291,7 @@ int main(int argc, char *argv[]) {
                          player->setPlaybackRate(speed);
                      });
 
+
     // Create a volume control slider
     QSlider *volumeSlider = new QSlider(Qt::Horizontal, buttonWidget);
     volumeSlider->setRange(0, 100); // Set the slider range from 0 to 100
@@ -274,6 +306,7 @@ int main(int argc, char *argv[]) {
     // tell the player what buttons and videos are available
     player->setContent(&buttons, & videos);
 
+
     // Create an event loop that waits for the media to finish first loading.
     QEventLoop loop;
     QObject::connect(player, &QMediaPlayer::mediaStatusChanged, &loop, &QEventLoop::quit);
@@ -282,15 +315,14 @@ int main(int argc, char *argv[]) {
     loop.exec();
 
     // Progress bar settings
-    QSlider* positionSlider = new QSlider(Qt::Horizontal, buttonWidget);
+    QSlider* positionSlider = new QSlider(Qt::Horizontal, sliderWidget);
 
     // Get the total duration of the video
     qint64 totalVideoDuration = player->duration();
     positionSlider->setRange(0, totalVideoDuration);
 
-
     // Handling media state changes
-    QObject::connect(player, &QMediaPlayer::stateChanged, [=](QMediaPlayer::State newState) {
+    QObject::connect(player, &QMediaPlayer::stateChanged, [=]() {
 
        // Make sure the video is loaded
        qint64 totalVideoDuration = player->duration();
@@ -299,6 +331,7 @@ int main(int argc, char *argv[]) {
        }
 
     });
+
 
      // Create a timer that triggers every 10 milliseconds
      QTimer *updatesliderTimer = new QTimer();
@@ -310,8 +343,8 @@ int main(int argc, char *argv[]) {
      });
      updatesliderTimer->start();
 
-
     QObject::connect(player, &ThePlayer::positionChanged, positionSlider, &QSlider::setValue);
+
 
     // create two buttons for fast forward and rewind.
     QPushButton *forwardButton = new QPushButton("Fast Forward");
@@ -340,6 +373,7 @@ int main(int argc, char *argv[]) {
         }
     });
 
+
     // Add Labels for Duration Display
     QLabel *totalDurationLabel = new QLabel(buttonWidget);
     QLabel *currentPositionLabel = new QLabel("00:00", buttonWidget);
@@ -364,42 +398,38 @@ int main(int argc, char *argv[]) {
 
 
 
+    // Create a button for taking screenshots
+    QPushButton screenshotButton("Take Screenshot");
 
+    // Connect button click to the screenshot function
+    QObject::connect(&screenshotButton, &QPushButton::clicked, [functionWidget]() {
+        // Capture the current frame as a QPixmap
+        QPixmap screenshot = QPixmap::grabWindow(QApplication::desktop()->winId());
 
-    // // Create the main window and layout
-    // QGraphicsScene *scene = new QGraphicsScene;
-    // QGraphicsView *view = new QGraphicsView(scene);
+        // Save or process the screenshot as needed
+        screenshot.save("screenshot.png");
+        qDebug() << "Screenshot taken!";
 
-    // // Add the video widget to the scene
-    // QGraphicsProxyWidget *videoProxy = scene->addWidget(videoWidget);
-    // videoProxy->setZValue(0); // Video is at layer 0
+    });
 
-    // // Add the function widget to the scene
-    // QGraphicsProxyWidget *functionProxy = scene->addWidget(functionWidget);
-    // functionProxy->setZValue(1); // Function bar is at layer 1, above the video
+    layout->addWidget(&screenshotButton);
 
-
-
-
-    // create the main window and layout
-    QWidget window;
-    QVBoxLayout *top = new QVBoxLayout();
-    window.setLayout(top);
-    window.setWindowTitle("tomeo");
-    window.setMinimumSize(800, 680);
+    screenshotButton.setVisible(false); // Initially hide the screenshot button
 
     // Create full screen
     QPushButton fullscreenButton("Toggle Fullscreen");
     layout->addWidget(&fullscreenButton);
 
     // Connect the button click event to the full screen toggle slot
-    QObject::connect(&fullscreenButton, &QPushButton::clicked, [&window, &fullscreenButton]() {
+    QObject::connect(&fullscreenButton, &QPushButton::clicked, [&window, &fullscreenButton, &screenshotButton]() {
         if (window.isFullScreen()) {
             window.showNormal(); // Exit Fulllscreen
             fullscreenButton.setText("Toggle Fullscreen");
+            screenshotButton.setVisible(false);
         } else {
             window.showFullScreen(); // Toggle Fullscreen
             fullscreenButton.setText("Exit Fullscreen");
+            screenshotButton.setVisible(true);
         }
     });
 
@@ -413,22 +443,36 @@ int main(int argc, char *argv[]) {
                                     "}";
 
     fullscreenButton.setStyleSheet(fullscreenButtonStyle);
+
+
     // Style example-------------------------------------------------
 
     //用于查看功能栏大小以及布局
     // functionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 128);");
+    // Add videoWidget and functionWidget to the top level layout
+    // videoWidget->lower();
+    // functionWidget->raise();
+    // videolayout->addWidget(functionWidget);
 
-    // add the video and the buttons to the top level widget
-        // Set up the layout for the main window
-        // top->addWidget(view);
+    // 设置 functionWidget 为半透明
+    // functionWidget->setStyleSheet("background-color: rgba(255, 255, 255, 50);");
 
-    top->addWidget(videoWidget);
-    top->addWidget(functionWidget);
+    functionWidget->setFixedHeight(175);
 
-    // 在需要时，隐藏或显示部件
-    // videoWidget->setVisible(true);  // 显示 videoWidget
-    // sliderWidget->setVisible(false);  // 隐藏 sliderWidget
-    // buttonWidget->setVisible(false);  // 隐藏 buttonWidget
+    QStackedLayout * sBoxLayout = new QStackedLayout();
+    sBoxLayout->setStackingMode(QStackedLayout::StackAll);
+
+    sBoxLayout->addWidget(videoWidget);
+    sBoxLayout->addWidget(functionWidget);
+    functionWidget->stackUnder(videoWidget);
+    videoWidget->raise();
+
+    top->addLayout(sBoxLayout);
+
+    window.setLayout(top);
+
+    // top->addWidget(videoWidget);
+    // top->addWidget(functionWidget);
 
     // showtime!
     window.show();

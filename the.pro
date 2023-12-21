@@ -16,6 +16,9 @@ HEADERS += \
     the_button.h \
     the_player.h
 
+# FORMS += \
+#     mainwindow.ui
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
