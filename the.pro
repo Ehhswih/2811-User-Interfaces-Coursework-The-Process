@@ -16,6 +16,15 @@ HEADERS += \
     the_button.h \
     the_player.h
 
+TRANSLATIONS += \
+    translations/the_en.ts \
+    translations/the_zh.ts \
+    translations/the_fr.ts \
+    translations/the_de.ts \
+    translations/the_es.ts \
+    translations/the_ar.ts \
+    translations/the_ja.ts
+
 # FORMS += \
 #     mainwindow.ui
 

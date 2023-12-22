@@ -92,7 +92,6 @@ QString formatTime(qint64 timeInMs) {
     return QString::asprintf("%02lld:%02lld", minutes, seconds);
 }
 
-
 int main(int argc, char *argv[]) {
 
     // let's just check that Qt is operational first
@@ -101,10 +100,13 @@ int main(int argc, char *argv[]) {
     // create the Qt Application
     QApplication app(argc, argv);
 
+    // create the translator
+    QTranslator translator;
+
     // collect all the videos in the folder
     std::vector<TheButtonInfo> videos;
 
-    if (argc == 2)
+    if (argc >= 2)
         videos = getInfoIn(std::string(argv[1]));
 
     qDebug() << "Number of videos found:" << videos.size();
@@ -118,6 +120,15 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
+    if (argc == 3)
+    {
+        QString qmPath = argv[2];
+        if (translator.load(qmPath)) {
+            app.installTranslator(&translator);
+        } else {
+            qDebug() << "Failed to load translation file:" << qmPath;
+        }
+    }
 
     // create the main window and layout
     QWidget window;
@@ -162,18 +173,6 @@ int main(int argc, char *argv[]) {
     functionlayout->addWidget(buttonWidget);
 
     // functionWidget->setVisible(true);
-
-
-    // Remove this comment if you need a rotating image
-    // create the four buttons
-    // for ( int i = 0; i < 4; i++ ) {
-    //     TheButton *button = new TheButton(buttonWidget);
-    //     button->connect(button, SIGNAL(jumpTo(TheButtonInfo* )), player, SLOT (jumpTo(TheButtonInfo*))); // when clicked, tell the player to play.
-    //     buttons.push_back(button);
-    //     layout->addWidget(button);
-    //     button->init(&videos.at(i));
-    // }
-
 
     // create the play and pause buttons
     QPushButton *togglePlayPauseButton = new QPushButton("Pause", buttonWidget);
@@ -237,10 +236,13 @@ int main(int argc, char *argv[]) {
     QObject::connect(prevButton, &QPushButton::clicked, player, &ThePlayer::previousVideo);
 
     // Set the Corresponding Playback Modes
+    QString tr_seq = QObject::tr("Sequential");
+    QString tr_loop = QObject::tr("Loop");
+    QString tr_stop = QObject::tr("Stop at End");
     QComboBox *playbackModeComboBox = new QComboBox;
-    playbackModeComboBox->addItem("Sequential");
-    playbackModeComboBox->addItem("Loop");
-    playbackModeComboBox->addItem("Stop at End");
+    playbackModeComboBox->addItem(tr_seq);
+    playbackModeComboBox->addItem(tr_loop);
+    playbackModeComboBox->addItem(tr_stop);
     layout->addWidget(playbackModeComboBox);
 
     QObject::connect(playbackModeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
