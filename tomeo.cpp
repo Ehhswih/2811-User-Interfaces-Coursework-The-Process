@@ -447,6 +447,34 @@ int main(int argc, char *argv[]) {
     fullscreenButton.setStyleSheet(fullscreenButtonStyle);
 
 
+    QPushButton *openFileButton = new QPushButton("Open File");
+    layout->addWidget(openFileButton);
+
+    QObject::connect(openFileButton, &QPushButton::clicked, [=]() {
+        QFileDialog *fileDialog = new QFileDialog();
+        fileDialog->setAcceptMode(QFileDialog::AcceptOpen);
+        fileDialog->setFileMode(QFileDialog::ExistingFiles);
+        fileDialog->setWindowTitle(QObject::tr("Open File"));
+
+        QStringList supportedMimeTypes = player->supportedMimeTypes();
+        if (!supportedMimeTypes.isEmpty()) {
+            supportedMimeTypes.append("audio/x-m3u"); // MP3 playlists
+            fileDialog->setMimeTypeFilters(supportedMimeTypes);
+        }
+
+
+        fileDialog->setDirectory(QStandardPaths::standardLocations(QStandardPaths::MoviesLocation).value(0, QDir::homePath()));
+
+
+        if (fileDialog->exec() == QDialog::Accepted)
+            player->addToPlaylist(fileDialog->selectedUrls());
+
+
+        player->play();
+    });
+
+
+
     // Style example-------------------------------------------------
 
     //用于查看功能栏大小以及布局

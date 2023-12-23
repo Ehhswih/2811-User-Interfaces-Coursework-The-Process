@@ -11,6 +11,7 @@
 #include <QMediaPlaylist>
 #include <QSlider>
 #include <QListWidget>
+#include <QFileInfo>
 
 #include "the_button.h"
 #include <vector>
@@ -72,6 +73,10 @@ public slots:
 
     void nextVideo();
     void previousVideo();
+
+    void addToPlaylist(const QList<QUrl> &urls);
 };
+
+static bool isPlaylist(const QUrl &url);
 
 #endif //CW2_THE_PLAYER_H

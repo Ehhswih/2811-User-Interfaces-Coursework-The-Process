@@ -59,4 +59,22 @@ void ThePlayer::previousVideo() {
 }
 
 
+static bool isPlaylist(const QUrl &url) // Check for ".m3u" playlists.
+{
+    if (!url.isLocalFile())
+        return false;
+    const QFileInfo fileInfo(url.toLocalFile());
+    return fileInfo.exists() && !fileInfo.suffix().compare(QLatin1String("m3u"), Qt::CaseInsensitive);
+}
+
+void ThePlayer::addToPlaylist(const QList<QUrl> &urls)
+{
+    for (auto &url: urls) {
+        if (isPlaylist(url))
+            playlist->load(url);
+        else
+            playlist->addMedia(url);
+    }
+}
+
 
