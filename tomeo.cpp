@@ -473,6 +473,40 @@ int main(int argc, char *argv[]) {
         player->play();
     });
 
+    // Create a brightness adjustment slider
+    QSlider *brightnessSlider = new QSlider(Qt::Horizontal);
+    brightnessSlider->setRange(-100, 100);
+    brightnessSlider->setValue(videoWidget->brightness());
+    QObject::connect(brightnessSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setBrightness);
+    QObject::connect(videoWidget, &QVideoWidget::brightnessChanged, brightnessSlider, &QSlider::setValue);
+
+    // Create a contrast adjustment slider
+    QSlider *contrastSlider = new QSlider(Qt::Horizontal);
+    contrastSlider->setRange(-100, 100);
+    contrastSlider->setValue(videoWidget->contrast());
+    QObject::connect(contrastSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setContrast);
+    QObject::connect(videoWidget, &QVideoWidget::contrastChanged, contrastSlider, &QSlider::setValue);
+
+    // Create a hue adjustment slider
+    QSlider *hueSlider = new QSlider(Qt::Horizontal);
+    hueSlider->setRange(-100, 100);
+    hueSlider->setValue(videoWidget->hue());
+    QObject::connect(hueSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setHue);
+    QObject::connect(videoWidget, &QVideoWidget::hueChanged, hueSlider, &QSlider::setValue);
+
+    // Create a saturation adjustment slider
+    QSlider *saturationSlider = new QSlider(Qt::Horizontal);
+    saturationSlider->setRange(-100, 100);
+    saturationSlider->setValue(videoWidget->saturation());
+    QObject::connect(saturationSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setSaturation);
+    QObject::connect(videoWidget, &QVideoWidget::saturationChanged, saturationSlider, &QSlider::setValue);
+
+    // Add sliders to the layout
+    layout->addWidget(brightnessSlider);
+    layout->addWidget(contrastSlider);
+    layout->addWidget(hueSlider);
+    layout->addWidget(saturationSlider);
+
 
 
     // Style example-------------------------------------------------
