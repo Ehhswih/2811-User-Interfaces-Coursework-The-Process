@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>last.png</file>
+        <file>next.png</file>
+        <file>pause.png</file>
+        <file>setting.png</file>
+        <file>value.png</file>
+        <file>down.png</file>
+        <file>qss.png</file>
+        <file>up (1).png</file>
+        <file>commit (1).png</file>
+        <file>play.png</file>
+        <file>list.png</file>
+        <file>file.png</file>
+        <file>full.png</file>
+        <file>normal.png</file>
+        <file>shot.png</file>
+    </qresource>
+</RCC>

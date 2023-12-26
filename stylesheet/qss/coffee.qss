@@ -1,0 +1,256 @@
+.QWidget {
+   background-color: beige;
+}
+
+
+/* Nice Windows-XP-style password character. */
+QLineEdit[echoMode="2"] {
+    lineedit-password-character: 9679;
+}
+
+/* We provide a min-width and min-height for push buttons
+   so that they look elegant regardless of the width of the text. */
+QPushButton {
+    background-color: palegoldenrod;
+    border-width: 2px;
+    border-color: darkkhaki;
+    border-style: solid;
+    border-radius: 5;
+    padding: 3px;
+    min-width: 9ex;
+    min-height: 2.5ex;
+}
+
+QPushButton:hover {
+   background-color: khaki;
+}
+
+/* Increase the padding, so the text is shifted when the button is
+   pressed. */
+QPushButton:pressed {
+    padding-left: 5px;
+    padding-top: 5px;
+    background-color: #d0d67c;
+}
+
+QLabel, QAbstractButton {
+    font: bold;
+}
+
+/* Mark mandatory fields with a brownish color. */
+.mandatory {
+    color: brown;
+}
+
+/* Bold text on status bar looks awful. */
+QStatusBar QLabel {
+   font: normal;
+}
+
+QStatusBar::item {
+    border-width: 1;
+    border-color: darkkhaki;
+    border-style: solid;
+    border-radius: 2;
+}
+
+QLineEdit, QSpinBox, QTextEdit, QListView {
+    background-color: cornsilk;
+    selection-color: #0a214c; 
+    selection-background-color: #C19A6B;
+}
+
+QComboBox[editable="false"],
+QComboBox[editable="true"]::drop-down {
+    border-image: url(:/images/pushbutton.png) 5;
+    border-width: 5;
+}
+
+QComboBox[editable="false"]:hover,
+QComboBox[editable="true"]::drop-down:hover, QMenuBar::item:hover {
+    border-image: url(:/images/pushbutton_hover.png) 5;
+    border-width: 5;
+}
+
+QComboBox[editable="false"]:on,
+QComboBox[editable="true"]::drop-down:on, QMenuBar::item:on {
+    border-image: url(:/images/pushbutton_pressed.png) 5;
+    border-width: 5;
+}
+
+/* Customize read-only comboboxes. */
+
+QComboBox[editable="false"] {
+    padding-left: 3px;
+    padding-right: 20px; /* space for the arrow */
+}
+
+QComboBox[editable="false"]::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    border-left-style: solid;
+    border-left-color: darkgray;
+    border-left-width: 1px;
+}
+
+QComboBox[editable="false"]::down-arrow {
+    subcontrol-origin: content;
+    subcontrol-position: center;
+    position: relative;
+    left: 1px; /* 1 pixel dropdown border */
+}
+
+/* The combobox arrow is on when the popup is open. */
+QComboBox[editable="false"]::down-arrow:on {
+    position: relative;
+    top: 1px;
+    left: 2px;
+}
+
+/* Customize editable comboboxes. */
+
+QComboBox[editable="true"] {
+    padding-right: 16px;
+}
+
+QComboBox[editable="true"]::drop-down {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    width: 13px;
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    right: 2px;
+}
+
+QComboBox[editable="true"]::drop-down,
+QComboBox[editable="true"]::drop-down:hover,
+QComboBox[editable="true"]::drop-down:on {
+    border-width: 0px;
+    border-left-width: 3px; /* we need only left and center part */
+}
+
+/* Shift the arrow when it's open. */
+QComboBox[editable="true"]::down-arrow:on {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+
+
+
+
+
+
+QListView {
+    show-decoration-selected: 1;
+}
+
+QListView::item:hover {
+    background-color: wheat;
+}
+
+/* We reserve 1 pixel space in padding. When we get the focus,
+   we kill the padding and enlarge the border. This makes the items
+   glow. */
+QLineEdit, QFrame {
+    border-width: 2px;
+    padding: 1px;
+    border-style: solid;
+    border-color: darkkhaki;
+    border-radius: 5px;
+}
+
+/* As mentioned above, eliminate the padding and increase the border. */
+QLineEdit:focus, QFrame:focus {
+    border-width: 3px;
+    padding: 0px;
+}
+
+/* A QLabel is a QFrame ... */
+QLabel {
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+/* A QToolTip is a QLabel ... */
+QToolTip {
+    border: 2px solid darkkhaki;
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 200;
+}
+
+/* Nice to have the background color change when hovered. */
+QRadioButton:hover, QCheckBox:hover {
+    background-color: wheat;
+}
+
+/* Force the dialog's buttons to follow the Windows guidelines. */
+QDialogButtonBox {
+    button-layout: 0;
+}
+
+QProgressBar{  
+    color : solid gray;  
+    border: 2px solid gray;  
+    border-radius: 5px;  
+    background: transparent;  
+    padding: 0px;  
+    text-align : center ;  
+}  
+
+/* === QToolBar === */
+QToolBar {
+    background-color:beige ;
+    border: none;
+    padding: 0px;
+}
+
+QToolBar:handle {
+    background:beige ;
+    border-left: 0px dotted yellow;
+    color: #BBBBBB;
+}
+
+QToolBar::separator {
+    width: 0px;
+    background-color:beige;
+}
+
+QToolButton{
+ background-color:rgb(44,44,44);
+}
+
+QToolButton:hover{
+  background-color:rgb(44,144,244);
+}
+
+QHeaderView::section{
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(80, 80, 80, 255), stop:1 rgba(30, 30, 30, 255));
+    color: rgb(240, 240, 240);
+    padding-left: 4px;
+    border: 1px solid beige;
+    min-height: 30px;
+}
+
+/*Qmenu Style Sheets*/
+ QMenu {
+     background-color: #999999;
+     border: 1px solid white;
+ }
+
+ QMenu::item {
+     /* sets background of menu item. set this to something non-transparent
+         if you want menu color and menu item color to be different */
+     background-color: transparent;
+     padding:8px 16px;
+     border-bottom:1px solid #DBDBDB;
+ }
+
+ QMenu::item:selected { /* when user selects item using mouse or keyboard */
+     background-color: #2dabf9;
+ }

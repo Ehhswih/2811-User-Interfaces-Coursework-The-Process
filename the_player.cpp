@@ -17,16 +17,13 @@ void ThePlayer::setContent(std::vector<TheButton*>* b, std::vector<TheButtonInfo
 
     // Start playing the first video
     playlist->setCurrentIndex(0);
-    play();
+
 }
 
 // change the image and video for one button every one second
 void ThePlayer::shuffle() {
     TheButtonInfo* i = & infos -> at (rand() % infos->size() );
-//        setMedia(*i->url);
 
-    //Remove this comment if you need a rotating image
-    // buttons -> at( updateCount++ % buttons->size() ) -> init( i );
 }
 
 void ThePlayer::playStateChanged (QMediaPlayer::State ms) {
