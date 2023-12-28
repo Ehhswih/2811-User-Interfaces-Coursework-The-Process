@@ -15,7 +15,7 @@ Before running the application, please follow these instructions:
 
 ## Example Command
 
-./the.exe /videos /translations/the_zh.qm
+`./the.exe /videos /translations/the_zh.qm`
 
 Replace `/videos` with the actual address of your video file and `/translations/the_zh.qm` with the appropriate translation file if needed.
 
